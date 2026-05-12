@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>4th Anniversary</title>
+    <title>Happy 4th Anniversary</title>
     <style>
         :root {
             --bg-pink: #fff0f5;
@@ -20,10 +20,26 @@
 
         .content-wrapper {
             display: flex; flex-direction: column; align-items: center;
-            padding: 60px 20px; width: 100%; max-width: 800px;
+            padding: 40px 20px; width: 100%; max-width: 800px;
         }
 
-        /* [디자인 복원] 화려한 정석 달력 스타일 */
+        /* [추가] 4주년 축하 문구 스타일 */
+        .main-title {
+            font-size: 2.6rem;
+            color: var(--heart-red);
+            margin-bottom: 35px;
+            text-shadow: 2px 2px 10px rgba(255, 77, 109, 0.2);
+            font-weight: 800;
+            text-align: center;
+            animation: softBounce 2s infinite ease-in-out;
+        }
+
+        @keyframes softBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* 화려한 정석 달력 스타일 */
         .calendar-container {
             background: white;
             padding: 30px;
@@ -31,7 +47,7 @@
             box-shadow: 0 15px 40px rgba(0,0,0,0.1);
             border: 3px solid var(--anniversary-gold);
             width: 350px;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
 
         .calendar-header {
@@ -144,7 +160,10 @@
 <body>
 
 <div class="content-wrapper">
-    <!-- 처음 보내드린 디자인의 달력 -->
+    <!-- 메인 축하 문구 -->
+    <h1 class="main-title">4주년을 축하합니다 💖</h1>
+
+    <!-- 정석 달력 -->
     <div class="calendar-container">
         <div class="calendar-header">2026. 05</div>
         <div class="calendar-grid">
