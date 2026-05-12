@@ -2,12 +2,13 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Find the Path of 4</title>
+    <title>Lovely Path of 4</title>
     <style>
         :root {
             --main-pink: #ffb7c5;
             --soft-pink: #fff0f5;
             --dark-pink: #ff8da1;
+            --bg-white: rgba(255, 255, 255, 0.6);
         }
 
         body, html {
@@ -18,136 +19,145 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, var(--soft-pink) 0%, #ffffff 100%);
-            font-family: 'Pretendard', sans-serif;
+            background: linear-gradient(135deg, var(--soft-pink) 0%, #ffe4e1 100%);
+            font-family: 'Pretendard', -apple-system, sans-serif;
             overflow: hidden;
         }
 
+        /* 가로로 와이드한 중앙 박스 */
         #game-container {
             position: relative;
-            width: 400px;
+            width: 80%;
+            max-width: 800px;
             height: 500px;
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(255, 183, 197, 0.2);
+            background: var(--bg-white);
+            border-radius: 40px;
+            box-shadow: 0 15px 35px rgba(255, 183, 197, 0.2);
+            border: 2px solid white;
+            /* 숫자 영역을 중앙에 가두기 위한 설정 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 숫자가 그려질 실제 가상의 영역 (중앙 정렬) */
+        #path-canvas {
+            position: relative;
+            width: 300px; /* 숫자가 그려질 영역의 너비 */
+            height: 400px;
         }
 
         .target-btn {
             position: absolute;
-            padding: 12px 20px;
+            padding: 10px 18px;
             background-color: var(--main-pink);
             color: white;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(255, 141, 161, 0.3);
-            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 4px 10px rgba(255, 141, 161, 0.3);
             z-index: 10;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .target-btn:hover {
-            background-color: var(--dark-pink);
-            transform: scale(1.05);
+        .target-btn:active {
+            transform: translate(-50%, -50%) scale(0.9);
         }
 
+        /* 클릭 흔적 (하트 모양 혹은 원형) */
         .trace {
             position: absolute;
-            width: 12px;
-            height: 12px;
-            background-color: var(--main-pink);
+            width: 15px;
+            height: 15px;
+            background-color: var(--dark-pink);
             border-radius: 50%;
             transform: translate(-50%, -50%);
-            animation: appear 0.5s ease-out;
+            opacity: 0.5;
+            pointer-events: none; /* 클릭 방해 금지 */
         }
 
         #next-link {
             display: none;
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             text-decoration: none;
-            color: var(--dark-pink);
-            font-size: 1.5rem;
+            color: white;
+            font-size: 1.2rem;
             font-weight: bold;
-            background: white;
-            padding: 20px 40px;
+            background: var(--dark-pink);
+            padding: 15px 35px;
             border-radius: 50px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(255, 141, 161, 0.4);
             z-index: 100;
-            animation: fadeIn 1s;
-        }
-
-        @keyframes appear {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+            animation: fadeIn 0.8s ease-in-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <button id="main-button" class="target-btn">Click!</button>
-    <a href="next_page.html" id="next-link">다음으로 넘어가기 🌸</a>
+    <div id="path-canvas">
+        <button id="main-button" class="target-btn">Touch!</button>
+    </div>
+    <a href="next_page.html" id="next-link">사랑을 담아 다음으로 💖</a>
 </div>
 
 <script>
-    // 숫자 '4'의 궤적을 그리는 좌표 배열 (퍼센트 단위)
-    // 10번의 클릭 위치를 '4' 모양이 되도록 미리 정의
-    const path4 = [
-        {x: 70, y: 80}, // 세로선 하단
-        {x: 70, y: 60}, 
-        {x: 70, y: 40}, 
-        {x: 70, y: 20}, // 세로선 상단
-        {x: 50, y: 40}, // 대각선 중간
-        {x: 30, y: 60}, // 대각선 끝
-        {x: 50, y: 60}, // 가로선
-        {x: 70, y: 60}, // 가로선 교차점
-        {x: 85, y: 60}, // 가로선 끝
-        {x: 70, y: 90}  // 세로선 마무리
+    // 숫자 '4'의 형태를 만드는 좌표 (중앙 300x400 영역 내의 % 좌표)
+    const points = [
+        {x: 80, y: 10}, {x: 80, y: 30}, {x: 80, y: 50}, {x: 80, y: 70}, {x: 80, y: 90}, // 세로 기둥
+        {x: 10, y: 50}, {x: 30, y: 50}, {x: 50, y: 50}, // 가로 막대
+        {x: 60, y: 30}, {x: 40, y: 15}  // 대각선 연결 부위
     ];
 
+    // 배열을 무작위로 섞는 함수 (Fisher-Yates Shuffle)
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    const randomizedPath = shuffle([...points]);
     let clickCount = 0;
+
     const btn = document.getElementById('main-button');
-    const container = document.getElementById('game-container');
+    const canvas = document.getElementById('path-canvas');
     const nextLink = document.getElementById('next-link');
 
-    function moveButton() {
-        if (clickCount < path4.length) {
-            const pos = path4[clickCount];
-            
-            // 버튼 위치 이동
+    function updateButton() {
+        if (clickCount < randomizedPath.length) {
+            const pos = randomizedPath[clickCount];
             btn.style.left = pos.x + "%";
             btn.style.top = pos.y + "%";
-            
-            clickCount++;
         } else {
-            // 10번 클릭 완료 시
+            // 모든 클릭 완료
             btn.style.display = 'none';
             nextLink.style.display = 'block';
         }
     }
 
-    btn.addEventListener('click', (e) => {
+    btn.addEventListener('click', () => {
         // 현재 위치에 흔적 남기기
         const trace = document.createElement('div');
         trace.className = 'trace';
         trace.style.left = btn.style.left;
         trace.style.top = btn.style.top;
-        container.appendChild(trace);
+        canvas.appendChild(trace);
 
-        // 버튼 다음 위치로 이동
-        moveButton();
+        clickCount++;
+        updateButton();
     });
 
-    // 초기 위치 설정
-    moveButton();
+    // 시작 위치 설정
+    updateButton();
 </script>
 
 </body>
