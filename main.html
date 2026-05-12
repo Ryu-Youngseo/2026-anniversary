@@ -2,13 +2,12 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Happy 4th Anniversary</title>
+    <title>4th Anniversary Celebration</title>
     <style>
         :root {
             --bg-pink: #fff0f5;
             --anniversary-gold: #ffd700;
             --heart-red: #ff4d6d;
-            --soft-white: rgba(255, 255, 255, 0.8);
         }
 
         body, html {
@@ -16,61 +15,61 @@
             display: flex; flex-direction: column; align-items: center;
             background: linear-gradient(180deg, var(--bg-pink) 0%, #ffdee9 100%);
             font-family: 'Pretendard', sans-serif;
-            color: #4a4a4a;
+            overflow-x: hidden;
         }
 
-        /* 화려한 타이틀 */
-        .title {
-            margin-top: 50px;
-            font-size: 2.5rem;
+        /* 중앙 정렬을 위한 래퍼 */
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px 20px;
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+        }
+
+        /* 문구 영역 */
+        .message-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .message-section h1 {
+            font-size: 2.8rem;
             color: var(--heart-red);
-            text-shadow: 2px 2px 10px rgba(255, 77, 109, 0.3);
-            animation: bounce 2s infinite;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 10px rgba(255, 77, 109, 0.2);
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .message-section p {
+            font-size: 1.3rem;
+            color: #555;
+            font-weight: 500;
         }
 
-        /* 달력 스타일 */
+        /* 달력 디자인 유지 */
         .calendar-container {
-            margin-top: 30px;
             background: white;
             padding: 30px;
             border-radius: 25px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.1);
             border: 3px solid var(--anniversary-gold);
             width: 350px;
+            margin-bottom: 50px;
         }
 
-        .calendar-header {
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            text-align: center;
-        }
-
+        .calendar-header { text-align: center; font-size: 1.5rem; font-weight: bold; margin-bottom: 20px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center; }
         .day-label { font-weight: bold; color: #999; font-size: 0.8rem; }
-
         .day { padding: 10px 0; border-radius: 10px; font-weight: 500; position: relative; }
 
-        /* 5월 13일 강조 효과 */
         .anniversary-day {
             background-color: var(--heart-red);
             color: white !important;
             font-weight: bold;
             border-radius: 50%;
             box-shadow: 0 0 20px var(--heart-red);
-            z-index: 1;
         }
 
         .anniversary-day::after {
@@ -80,93 +79,124 @@
             transform: translateX(-50%);
             font-size: 0.7rem;
             color: var(--heart-red);
-            white-space: nowrap;
             animation: twinkle 1s infinite alternate;
         }
 
-        @keyframes twinkle {
-            from { opacity: 0.5; transform: translateX(-50%) scale(0.9); }
-            to { opacity: 1; transform: translateX(-50%) scale(1.1); }
-        }
+        @keyframes twinkle { from { opacity: 0.5; transform: translateX(-50%) scale(0.9); } to { opacity: 1; transform: translateX(-50%) scale(1.1); } }
 
-        /* 하트 사진 프레임 영역 */
-        .heart-gallery {
-            margin-top: 60px;
-            display: flex;
-            gap: 30px;
-            padding-bottom: 50px;
-        }
-
-        .heart-frame {
+        /* 버튼 영역 */
+        .btn-group {
             position: relative;
-            width: 150px;
-            height: 150px;
-            background-color: white;
-            border: 4px solid var(--heart-red);
-            /* 하트 모양 만들기 */
-            clip-path: path('M75 145c-30-20-75-55-75-100 0-25 20-45 45-45 15 0 25 10 30 15 5-5 15-15 30-15 25 0 45 20 45 45 0 45-45 80-75 100z');
-            transition: transform 0.3s ease;
-            cursor: pointer;
-            overflow: hidden;
-        }
-
-        .heart-frame:hover {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .heart-frame img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: 100px; /* 도망갈 공간 확보 */
+            display: flex;
+            justify-content: center;
+            gap: 20px;
         }
 
-        .heart-frame::before {
-            content: "Photo";
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            color: var(--heart-red);
-            font-size: 0.8rem;
+        .btn {
+            padding: 15px 45px;
+            font-size: 1.2rem;
             font-weight: bold;
-            z-index: -1;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
         }
+
+        #yes-btn {
+            background-color: var(--heart-red);
+            color: white;
+            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.3);
+        }
+
+        #no-btn {
+            background-color: #eee;
+            color: #777;
+            position: absolute; /* 도망가기 위해 필요 */
+            left: calc(50% + 40px); /* 초기 위치 */
+        }
+
+        #yes-btn:hover { background-color: #ff1f4b; transform: scale(1.05); }
+
     </style>
 </head>
 <body>
 
-    <h1 class="title">Together Forever ✨</h1>
+    <div class="content-wrapper">
+        <div class="message-section">
+            <h1>4주년을 축하합니다 💖</h1>
+            <p>선물을 받기 위해 게임에 참여하시겠습니까?</p>
+        </div>
 
-    <div class="calendar-container">
-        <div class="calendar-header">2026. 05</div>
-        <div class="calendar-grid">
-            <div class="day-label">S</div><div class="day-label">M</div><div class="day-label">T</div><div class="day-label">W</div><div class="day-label">T</div><div class="day-label">F</div><div class="day-label">S</div>
+        <div class="calendar-container">
+            <div class="calendar-header">2026. 05</div>
+            <div class="calendar-grid">
+                <div class="day-label">S</div><div class="day-label">M</div><div class="day-label">T</div><div class="day-label">W</div><div class="day-label">T</div><div class="day-label">F</div><div class="day-label">S</div>
+                <div class="day"></div><div class="day"></div><div class="day"></div><div class="day"></div><div class="day"></div><div class="day">1</div><div class="day">2</div>
+                <div class="day">3</div><div class="day">4</div><div class="day">5</div><div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div>
+                <div class="day">10</div><div class="day">11</div><div class="day">12</div>
+                <div class="day anniversary-day">13</div>
+                <div class="day">14</div><div class="day">15</div><div class="day">16</div>
+                <div class="day">17</div><div class="day">18</div><div class="day">19</div><div class="day">20</div><div class="day">21</div><div class="day">22</div><div class="day">23</div>
+                <div class="day">24</div><div class="day">25</div><div class="day">26</div><div class="day">27</div><div class="day">28</div><div class="day">29</div><div class="day">30</div>
+                <div class="day">31</div>
+            </div>
+        </div>
+
+        <div class="btn-group" id="btn-area">
+            <button class="btn" id="yes-btn" onclick="location.href='gift_game.html'">네!</button>
+            <button class="btn" id="no-btn">아니오</button>
+        </div>
+    </div>
+
+   <script>
+        const noBtn = document.getElementById('no-btn');
+        const btnArea = document.getElementById('btn-area');
+    
+        // 버튼을 도망가게 만드는 핵심 함수
+        function escapeButton() {
+            // 도망갈 수 있는 최대 범위 (박스 너비/높이 안에서 버튼 크기를 뺀 만큼)
+            // 모바일 대응을 위해 뷰포트 너비도 고려합니다.
+            const containerWidth = btnArea.clientWidth;
+            const containerHeight = 300; // 도망갈 수 있는 세로 반경
+    
+            const maxX = containerWidth - noBtn.clientWidth;
+            const maxY = containerHeight - noBtn.clientHeight;
+    
+            // 무작위 좌표 생성 (중앙 근처에서 도망가도록 조절)
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY) - (containerHeight / 2);
+    
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
             
-            <!-- 2026년 5월 달력 (1일은 금요일 시작) -->
-            <div class="day"></div><div class="day"></div><div class="day"></div><div class="day"></div><div class="day"></div>
-            <div class="day">1</div><div class="day">2</div>
-            <div class="day">3</div><div class="day">4</div><div class="day">5</div><div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div>
-            <div class="day">10</div><div class="day">11</div><div class="day">12</div>
-            <!-- 13일 주인공 -->
-            <div class="day anniversary-day">13</div>
-            <div class="day">14</div><div class="day">15</div><div class="day">16</div>
-            <div class="day">17</div><div class="day">18</div><div class="day">19</div><div class="day">20</div><div class="day">21</div><div class="day">22</div><div class="day">23</div>
-            <div class="day">24</div><div class="day">25</div><div class="day">26</div><div class="day">27</div><div class="day">28</div><div class="day">29</div><div class="day">30</div>
-            <div class="day">31</div>
-        </div>
-    </div>
-
-    <div class="heart-gallery">
-        <!-- img 태그의 src 부분에 원하는 jpg 파일 경로를 넣으세요! -->
-        <div class="heart-frame">
-            <img src="photo1.jpg" alt="우리 사진 1">
-        </div>
-        <div class="heart-frame">
-            <img src="photo2.jpg" alt="우리 사진 2">
-        </div>
-        <div class="heart-frame">
-            <img src="photo3.jpg" alt="우리 사진 3">
-        </div>
-    </div>
-
+            // 도망갈 때 약간의 회전을 주어 더 얄밉게(?) 만듭니다.
+            const randomRotate = Math.floor(Math.random() * 40) - 20;
+            noBtn.style.transform = `rotate(${randomRotate}deg)`;
+        }
+    
+        // 1. PC용: 마우스를 갖다 대기만 해도 도망
+        noBtn.addEventListener('mouseover', escapeButton);
+    
+        // 2. 모바일용: 손가락이 닿는 순간(touchstart) 도망
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // 클릭 이벤트로 전이되는 것을 방지
+            escapeButton();
+        });
+    
+        // 3. 클릭 방어: 혹시라도 클릭에 성공했을 경우 (거의 불가능하겠지만요!)
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert("이 버튼은 누를 수 없어요! 😊");
+            escapeButton();
+        });
+    
+        // '네!' 버튼 클릭 시 효과 (선택사항)
+        document.getElementById('yes-btn').addEventListener('click', () => {
+            confettiEffect(); // 축하 팡파르 효과 등을 넣으면 좋아요
+        });
+    </script>
 </body>
 </html>
