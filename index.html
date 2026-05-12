@@ -2,10 +2,153 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>test</title>
+    <title>Find the Path of 4</title>
+    <style>
+        :root {
+            --main-pink: #ffb7c5;
+            --soft-pink: #fff0f5;
+            --dark-pink: #ff8da1;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--soft-pink) 0%, #ffffff 100%);
+            font-family: 'Pretendard', sans-serif;
+            overflow: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            width: 400px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(255, 183, 197, 0.2);
+        }
+
+        .target-btn {
+            position: absolute;
+            padding: 12px 20px;
+            background-color: var(--main-pink);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 141, 161, 0.3);
+            transition: transform 0.2s, background-color 0.2s;
+            z-index: 10;
+        }
+
+        .target-btn:hover {
+            background-color: var(--dark-pink);
+            transform: scale(1.05);
+        }
+
+        .trace {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: var(--main-pink);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: appear 0.5s ease-out;
+        }
+
+        #next-link {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-decoration: none;
+            color: var(--dark-pink);
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: white;
+            padding: 20px 40px;
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            z-index: 100;
+            animation: fadeIn 1s;
+        }
+
+        @keyframes appear {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
 </head>
 <body>
-    <h1>test</h1>
-    <p>test</p>
+
+<div id="game-container">
+    <button id="main-button" class="target-btn">Click!</button>
+    <a href="next_page.html" id="next-link">다음으로 넘어가기 🌸</a>
+</div>
+
+<script>
+    // 숫자 '4'의 궤적을 그리는 좌표 배열 (퍼센트 단위)
+    // 10번의 클릭 위치를 '4' 모양이 되도록 미리 정의
+    const path4 = [
+        {x: 70, y: 80}, // 세로선 하단
+        {x: 70, y: 60}, 
+        {x: 70, y: 40}, 
+        {x: 70, y: 20}, // 세로선 상단
+        {x: 50, y: 40}, // 대각선 중간
+        {x: 30, y: 60}, // 대각선 끝
+        {x: 50, y: 60}, // 가로선
+        {x: 70, y: 60}, // 가로선 교차점
+        {x: 85, y: 60}, // 가로선 끝
+        {x: 70, y: 90}  // 세로선 마무리
+    ];
+
+    let clickCount = 0;
+    const btn = document.getElementById('main-button');
+    const container = document.getElementById('game-container');
+    const nextLink = document.getElementById('next-link');
+
+    function moveButton() {
+        if (clickCount < path4.length) {
+            const pos = path4[clickCount];
+            
+            // 버튼 위치 이동
+            btn.style.left = pos.x + "%";
+            btn.style.top = pos.y + "%";
+            
+            clickCount++;
+        } else {
+            // 10번 클릭 완료 시
+            btn.style.display = 'none';
+            nextLink.style.display = 'block';
+        }
+    }
+
+    btn.addEventListener('click', (e) => {
+        // 현재 위치에 흔적 남기기
+        const trace = document.createElement('div');
+        trace.className = 'trace';
+        trace.style.left = btn.style.left;
+        trace.style.top = btn.style.top;
+        container.appendChild(trace);
+
+        // 버튼 다음 위치로 이동
+        moveButton();
+    });
+
+    // 초기 위치 설정
+    moveButton();
+</script>
+
 </body>
 </html>
