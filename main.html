@@ -155,6 +155,81 @@
             position: absolute; top: 15px; right: 20px;
             font-size: 1.8rem; cursor: pointer; color: #bbb;
         }
+
+        /* 물음표 아이콘 스타일 */
+        .quest-icon-container {
+            display: inline-block;
+            margin-left: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            vertical-align: middle;
+        }
+        .quest-icon {
+            font-size: 60px;
+            filter: drop-shadow(0 0 10px rgba(0, 255, 100, 0.5));
+        }
+        
+        /* 조사병단 팝업 (숲 배경) */
+        .quest-popup {
+            width: 90%;
+            max-width: 600px;
+            height: 400px;
+            background-image: url('forest_bg.jpg'); /* 임시 숲 배경 파일명 */
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden; /* 캐릭터가 밖으로 나가지 않게 */
+            border: 5px solid var(--anniversary-gold);
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        
+        /* 캐릭터 본체와 하트 */
+        .character-wrapper {
+            position: absolute;
+            width: 100px;
+            animation: odmGearFly 4s infinite linear;
+            z-index: 5;
+        }
+        
+        .character {
+            width: 100%;
+            height: auto;
+        }
+        
+        .heart-on-char {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 20px;
+            animation: heartBeat 0.5s infinite alternate;
+        }
+        
+        /* 사선 입체기동 애니메이션 */
+        @keyframes odmGearFly {
+            0% { top: 110%; left: -20%; transform: rotate(20deg) scale(0.8); }
+            50% { top: 20%; left: 40%; transform: rotate(10deg) scale(1.1); }
+            100% { top: -20%; left: 110%; transform: rotate(20deg) scale(0.8); }
+        }
+        
+        @keyframes heartBeat {
+            from { transform: scale(1); }
+            to { transform: scale(1.3); }
+        }
+        
+        .quest-message {
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            z-index: 10;
+            border: 1px solid var(--anniversary-gold);
+        }
     </style>
 </head>
 <body>
@@ -182,6 +257,10 @@
     <!-- 편지 아이콘 -->
     <div class="letter-icon-container" onclick="openLetter()">
         <div class="letter-icon">✉️</div>
+    </div>
+
+    <div class="quest-icon-container" onclick="openQuest()">
+        <div class="quest-icon">❓</div>
     </div>
 </div>
 
@@ -213,12 +292,37 @@
     </div>
 </div>
 
+<div class="modal-overlay" id="questOverlay" onclick="closeQuest()">
+    <div class="quest-popup" onclick="event.stopPropagation()">
+        <span class="close-btn" onclick="closeQuest()">&times;</span>
+        
+        <!-- 하트를 달고 날아다니는 캐릭터 -->
+        <div class="character-wrapper">
+            <img src="character.png" class="character" alt="조사병단">
+            <span class="heart-on-char">💖</span>
+        </div>
+        
+        <div class="quest-message">
+            심장을 바쳐 4주년을 축하한다! <br>
+            숲을 가로질러 선물을 찾아라!
+        </div>
+    </div>
+</div>
+
 <script>
     function openLetter() {
         document.getElementById('modalOverlay').classList.add('active');
     }
     function closeLetter() {
         document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    function openQuest() {
+        document.getElementById('questOverlay').classList.add('active');
+    }
+    
+    function closeQuest() {
+        document.getElementById('questOverlay').classList.remove('active');
     }
 </script>
 
