@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Perfect Centered Wide 4</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy 4th Anniversary</title>
     <style>
         :root {
             --main-pink: #ffb7c5;
@@ -19,6 +20,7 @@
             animation: gradientBG 15s ease infinite;
             font-family: 'Pretendard', sans-serif;
             overflow: hidden;
+            touch-action: manipulation; /* 모바일 더블탭 줌 방지 */
         }
 
         @keyframes gradientBG {
@@ -27,25 +29,50 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* 내부 박스 : 가로 와이드 설정 */
+        /* [반응형 박스] */
         #game-container {
             position: relative;
             width: 90%; 
-            max-width: 1000px; /* 가로로 넓게 */
+            max-width: 1000px; /* PC 최대폭 */
             height: 600px; 
             background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(15px);
-            border-radius: 50px;
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 40px;
             box-shadow: 0 20px 50px rgba(255, 183, 197, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.6);
             display: flex; justify-content: center; align-items: center;
+            transition: all 0.5s ease;
         }
 
-        /* 숫자 영역 : 박스 전체를 채우되 기둥은 중앙 정렬 */
+        /* [반응형 숫자 영역] */
         #path-canvas {
             position: relative;
-            width: 600px; /* 숫자 가로폭 (와이드 박스보다는 작게) */
-            height: 500px; /* 박스 세로를 거의 채우도록 설정 */
+            width: 80%; /* 컨테이너 대비 비율로 변경 */
+            max-width: 600px;
+            height: 80%;
+            max-height: 500px;
+        }
+
+        /* 모바일용 미디어 쿼리 (화면 너비 768px 이하) */
+        @media screen and (max-width: 768px) {
+            #game-container {
+                width: 95%; /* 모바일에서 꽉 차게 */
+                height: 80vh; /* 세로로 더 길게 */
+                border-radius: 30px;
+            }
+            #path-canvas {
+                width: 90%;
+                height: 70%;
+            }
+            .target-btn {
+                padding: 12px 24px !important;
+                font-size: 1rem !important;
+            }
+            #next-link {
+                width: 80%;
+                font-size: 0.9rem;
+            }
         }
 
         .target-btn {
@@ -57,11 +84,12 @@
             z-index: 10; transform: translate(-50%, -50%);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 8px 20px rgba(255, 141, 161, 0.4);
+            white-space: nowrap;
         }
 
         .trace {
             position: absolute;
-            width: 22px; height: 22px;
+            width: 18px; height: 18px;
             background-color: var(--dark-pink);
             border-radius: 50%;
             transform: translate(-50%, -50%);
@@ -69,10 +97,13 @@
             pointer-events: none;
         }
 
-        /* 은은하게 반짝이는 효과 */
+        @media screen and (max-width: 768px) {
+            .trace { width: 14px; height: 14px; }
+        }
+
         .glow-effect {
             opacity: 1 !important;
-            box-shadow: 0 0 35px 12px var(--glow-pink);
+            box-shadow: 0 0 30px 10px var(--glow-pink);
             animation: pulse 2.5s infinite ease-in-out;
         }
 
@@ -86,7 +117,7 @@
             text-decoration: none; color: white;
             font-weight: bold;
             background: linear-gradient(135deg, var(--dark-pink), #ff758c);
-            padding: 12px 22px; border-radius: 60px;
+            padding: 15px 25px; border-radius: 60px;
             box-shadow: 0 15px 40px rgba(255, 141, 161, 0.5);
             z-index: 100; text-align: center;
             animation: popIn 0.8s forwards;
@@ -108,29 +139,12 @@
 </div>
 
 <script>
-    /* 
-       숫자 '4'의 좌표 설계:
-       기둥(세로선)을 중앙(x: 50)으로 고정하여 정렬.
-    */
-   const points = [
-        // 1. 세로 기둥 (Main Pillar) : x: 50% 고정, y축 22.5%씩 균등 간격
-        {x: 50, y: 5},   // 꼭대기
-        {x: 50, y: 27.5}, 
-        {x: 50, y: 50},  // 가로선과의 교차점
-        {x: 50, y: 72.5}, 
-        {x: 50, y: 95},  // 바닥
-    
-        // 2. 왼쪽 사선 (Slanted Line) : (50,5)에서 (20,50)까지 일정한 기울기
-        // x축 15씩, y축 22.5씩 변화
-        {x: 35, y: 27.5}, 
-        {x: 20, y: 50}, 
-    
-        // 3. 가로 막대 (Horizontal Line) : y: 50% 고정, x축 15~20씩 균등 간격
-        // 사선 끝점(20,50)부터 기둥 오른쪽(70,50)까지
-        {x: 35, y: 50},  // 사선과 기둥 사이 중간점
-        {x: 60, y: 50},  // 기둥 오른쪽 첫 번째 점 (기둥 50에서 10만큼 이동)
-        {x: 75, y: 50}   // 가로 막대 끝점 (이전 점과 15차이)
+    const points = [
+        {x: 50, y: 5}, {x: 50, y: 27.5}, {x: 50, y: 50}, {x: 50, y: 72.5}, {x: 50, y: 95}, 
+        {x: 35, y: 27.5}, {x: 20, y: 50}, 
+        {x: 35, y: 50}, {x: 60, y: 50}, {x: 75, y: 50}
     ];
+
     function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -154,7 +168,6 @@
         } else {
             btn.style.display = 'none';
             applyGlowEffect();
-            
             setTimeout(() => {
                 nextLink.style.display = 'block';
                 nextLink.style.top = '50%';
@@ -172,7 +185,7 @@
         });
     }
 
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
         const trace = document.createElement('div');
         trace.className = 'trace';
         trace.style.left = btn.style.left;
