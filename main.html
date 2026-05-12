@@ -209,9 +209,39 @@
         
         /* 사선 입체기동 애니메이션 */
         @keyframes odmGearFly {
-            0% { top: 110%; left: -20%; transform: rotate(20deg) scale(0.8); }
-            50% { top: 20%; left: 40%; transform: rotate(10deg) scale(1.1); }
-            100% { top: -20%; left: 110%; transform: rotate(20deg) scale(0.8); }
+            0% { 
+                top: 80%; left: -10%; 
+                transform: rotate(15deg) scale(0.8); 
+            }
+            20% { 
+                top: 20%; left: 30%; 
+                transform: rotate(-10deg) scale(1.1); 
+            }
+            40% { 
+                top: 60%; left: 70%; 
+                transform: rotate(20deg) scale(0.9); 
+            }
+            60% { 
+                top: 10%; left: 50%; 
+                transform: rotate(-20deg) scale(1.2); 
+            }
+            80% { 
+                top: 40%; left: 10%; 
+                transform: rotate(10deg) scale(1); 
+            }
+            100% { 
+                top: 80%; left: 110%; 
+                transform: rotate(15deg) scale(0.8); 
+            }
+        }
+        
+        /* 캐릭터와 하트가 같이 흔들리는 효과 추가 */
+        .character-wrapper {
+            position: absolute;
+            width: 100px;
+            /* 4초 동안 더 다이나믹하게 움직이며, 부드러운 곡선을 위해 ease-in-out 사용 */
+            animation: odmGearFly 5s infinite ease-in-out; 
+            z-index: 5;
         }
         
         @keyframes heartBeat {
