@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Centered Path of 4</title>
+    <title>Perfect Centered 4</title>
     <style>
         :root {
             --main-pink: #ffb7c5;
@@ -20,7 +20,7 @@
 
         #game-container {
             position: relative;
-            width: 85%; max-width: 900px; height: 550px;
+            width: 85%; max-width: 800px; height: 500px;
             background: rgba(255, 255, 255, 0.6);
             border-radius: 40px;
             box-shadow: 0 15px 35px rgba(255, 183, 197, 0.2);
@@ -30,28 +30,28 @@
 
         #path-canvas {
             position: relative;
-            width: 350px; /* 숫자 영역 너비 */
-            height: 450px; /* 숫자 영역 높이 */
+            width: 300px; 
+            height: 400px;
         }
 
         .target-btn {
             position: absolute;
-            padding: 12px 22px;
+            padding: 10px 20px;
             background-color: var(--main-pink);
             color: white; border: none; border-radius: 50px;
             cursor: pointer; font-weight: bold;
             z-index: 10; transform: translate(-50%, -50%);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.2s ease-out;
             box-shadow: 0 4px 10px rgba(255, 141, 161, 0.3);
         }
 
         .trace {
             position: absolute;
-            width: 14px; height: 14px;
+            width: 15px; height: 15px;
             background-color: var(--dark-pink);
             border-radius: 50%;
             transform: translate(-50%, -50%);
-            opacity: 0.7;
+            opacity: 0.8;
             pointer-events: none;
         }
 
@@ -62,13 +62,7 @@
             background: var(--dark-pink);
             padding: 18px 40px; border-radius: 50px;
             box-shadow: 0 8px 25px rgba(255, 141, 161, 0.4);
-            z-index: 100; animation: pop 0.5s ease-out;
-            text-align: center;
-        }
-
-        @keyframes pop {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+            z-index: 100; text-align: center;
         }
     </style>
 </head>
@@ -76,25 +70,24 @@
 
 <div id="game-container">
     <div id="path-canvas">
-        <button id="main-button" class="target-btn">Click Me!</button>
+        <button id="main-button" class="target-btn">Click!</button>
     </div>
-    <a href="https://your-next-page.com" id="next-link">숫자 4 완성!<br>다음으로 이동하기 🌸</a>
+    <a href="https://your-next-page.com" id="next-link">완벽한 4 완성! 🌸<br>다음 페이지로</a>
 </div>
 
 <script>
-    // 숫자 '4'의 기둥을 중앙(x: 50)으로 배치한 10개의 좌표
+    // 숫자 '4'의 정석 좌표 (300x400 캔버스 기준 %)
     const points = [
-        // 1. 중앙 세로 기둥 (Main Pillar) - x축 50% 고정
-        {x: 50, y: 10}, {x: 50, y: 32}, {x: 50, y: 55}, {x: 50, y: 77}, {x: 50, y: 100},
+        // 1. 왼쪽 사선 (Top-Left to Middle-Left)
+        {x: 50, y: 10}, {x: 35, y: 35}, {x: 20, y: 60},
         
-        // 2. 왼쪽 사선 (Slanted Line)
-        {x: 10, y: 60}, {x: 30, y: 35}, 
+        // 2. 가로 막대 (Left to Right)
+        {x: 35, y: 60}, {x: 65, y: 60}, {x: 85, y: 60},
         
-        // 3. 가로 막대 (Cross Bar) - 기둥을 가로지름
-        {x: 10, y: 60}, {x: 30, y: 60}, {x: 70, y: 60}
+        // 3. 중앙 기둥 (Top to Bottom)
+        {x: 65, y: 10}, {x: 65, y: 35}, {x: 65, y: 75}, {x: 65, y: 100}
     ];
 
-    // 무작위 섞기 (Fisher-Yates Shuffle)
     function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -118,6 +111,9 @@
         } else {
             btn.style.display = 'none';
             nextLink.style.display = 'block';
+            nextLink.style.top = '50%';
+            nextLink.style.left = '50%';
+            nextLink.style.transform = 'translate(-50%, -50%)';
         }
     }
 
@@ -132,7 +128,6 @@
         updateButton();
     });
 
-    // 첫 위치 초기화
     updateButton();
 </script>
 
