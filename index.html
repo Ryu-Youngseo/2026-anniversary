@@ -2,12 +2,13 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Perfect Centered 4</title>
+    <title>Wide Glow Path of 4</title>
     <style>
         :root {
             --main-pink: #ffb7c5;
             --soft-pink: #fff0f5;
             --dark-pink: #ff8da1;
+            --glow-pink: rgba(255, 141, 161, 0.8);
         }
 
         body, html {
@@ -20,7 +21,7 @@
 
         #game-container {
             position: relative;
-            width: 85%; max-width: 800px; height: 500px;
+            width: 90%; max-width: 900px; height: 500px;
             background: rgba(255, 255, 255, 0.6);
             border-radius: 40px;
             box-shadow: 0 15px 35px rgba(255, 183, 197, 0.2);
@@ -28,41 +29,57 @@
             display: flex; justify-content: center; align-items: center;
         }
 
+        /* 숫자 영역을 더 와이드하게 조정 (가로 450px) */
         #path-canvas {
             position: relative;
-            width: 300px; 
-            height: 400px;
+            width: 450px; 
+            height: 350px;
         }
 
         .target-btn {
             position: absolute;
-            padding: 10px 20px;
+            padding: 12px 24px;
             background-color: var(--main-pink);
             color: white; border: none; border-radius: 50px;
             cursor: pointer; font-weight: bold;
             z-index: 10; transform: translate(-50%, -50%);
-            transition: all 0.2s ease-out;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 4px 10px rgba(255, 141, 161, 0.3);
         }
 
+        /* 클릭 흔적 디자인 및 애니메이션 */
         .trace {
             position: absolute;
-            width: 15px; height: 15px;
+            width: 18px; height: 18px;
             background-color: var(--dark-pink);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             opacity: 0.8;
             pointer-events: none;
+            transition: all 1s ease-in-out;
+        }
+
+        /* 10번 클릭 완료 시 적용될 광채 효과 */
+        .glow-effect {
+            box-shadow: 0 0 20px 5px var(--glow-pink);
+            filter: drop-shadow(0 0 10px var(--main-pink));
+            opacity: 1 !important;
         }
 
         #next-link {
             display: none; position: absolute;
             text-decoration: none; color: white;
-            font-size: 1.2rem; font-weight: bold;
+            font-size: 1.3rem; font-weight: bold;
             background: var(--dark-pink);
-            padding: 18px 40px; border-radius: 50px;
-            box-shadow: 0 8px 25px rgba(255, 141, 161, 0.4);
+            padding: 20px 45px; border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(255, 141, 161, 0.5);
             z-index: 100; text-align: center;
+            animation: popIn 0.6s forwards;
+        }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
         }
     </style>
 </head>
@@ -70,22 +87,22 @@
 
 <div id="game-container">
     <div id="path-canvas">
-        <button id="main-button" class="target-btn">Click!</button>
+        <button id="main-button" class="target-btn">Click! ✨</button>
     </div>
-    <a href="https://your-next-page.com" id="next-link">완벽한 4 완성! 🌸<br>다음 페이지로</a>
+    <a href="https://your-next-page.com" id="next-link">아름다운 4가 완성되었어요!<br>다음으로 이동하기 💖</a>
 </div>
 
 <script>
-    // 숫자 '4'의 정석 좌표 (300x400 캔버스 기준 %)
+    // 가로로 와이드한 '4'의 정교한 좌표 (450x350 캔버스 기준 %)
     const points = [
-        // 1. 왼쪽 사선 (Top-Left to Middle-Left)
-        {x: 50, y: 10}, {x: 35, y: 35}, {x: 20, y: 60},
+        // 1. 왼쪽 사선 (더 완만하고 넓게)
+        {x: 60, y: 10}, {x: 35, y: 35}, {x: 10, y: 65},
         
-        // 2. 가로 막대 (Left to Right)
-        {x: 35, y: 60}, {x: 65, y: 60}, {x: 85, y: 60},
+        // 2. 와이드 가로 막대
+        {x: 25, y: 65}, {x: 45, y: 65}, {x: 75, y: 65}, {x: 95, y: 65},
         
-        // 3. 중앙 기둥 (Top to Bottom)
-        {x: 65, y: 10}, {x: 65, y: 35}, {x: 65, y: 75}, {x: 65, y: 100}
+        // 3. 중앙 기둥 (오른쪽에 위치하여 '4' 모양 완성)
+        {x: 75, y: 10}, {x: 75, y: 40}, {x: 75, y: 90}
     ];
 
     function shuffle(array) {
@@ -109,12 +126,23 @@
             btn.style.left = pos.x + "%";
             btn.style.top = pos.y + "%";
         } else {
+            // 완성 시 연출
             btn.style.display = 'none';
-            nextLink.style.display = 'block';
-            nextLink.style.top = '50%';
-            nextLink.style.left = '50%';
-            nextLink.style.transform = 'translate(-50%, -50%)';
+            applyGlowEffect();
+            
+            setTimeout(() => {
+                nextLink.style.display = 'block';
+                nextLink.style.top = '50%';
+                nextLink.style.left = '50%';
+            }, 500);
         }
+    }
+
+    function applyGlowEffect() {
+        const traces = document.querySelectorAll('.trace');
+        traces.forEach(t => {
+            t.classList.add('glow-effect');
+        });
     }
 
     btn.addEventListener('click', () => {
