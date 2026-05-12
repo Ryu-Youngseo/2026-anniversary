@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Perfect Path of 4</title>
+    <title>Centered Path of 4</title>
     <style>
         :root {
             --main-pink: #ffb7c5;
@@ -20,7 +20,7 @@
 
         #game-container {
             position: relative;
-            width: 80%; max-width: 800px; height: 550px;
+            width: 85%; max-width: 900px; height: 550px;
             background: rgba(255, 255, 255, 0.6);
             border-radius: 40px;
             box-shadow: 0 15px 35px rgba(255, 183, 197, 0.2);
@@ -30,8 +30,8 @@
 
         #path-canvas {
             position: relative;
-            width: 320px; /* 숫자 영역 너비 */
-            height: 420px; /* 숫자 영역 높이 */
+            width: 350px; /* 숫자 영역 너비 */
+            height: 450px; /* 숫자 영역 높이 */
         }
 
         .target-btn {
@@ -53,7 +53,6 @@
             transform: translate(-50%, -50%);
             opacity: 0.7;
             pointer-events: none;
-            box-shadow: 0 0 8px rgba(255, 141, 161, 0.5);
         }
 
         #next-link {
@@ -64,6 +63,7 @@
             padding: 18px 40px; border-radius: 50px;
             box-shadow: 0 8px 25px rgba(255, 141, 161, 0.4);
             z-index: 100; animation: pop 0.5s ease-out;
+            text-align: center;
         }
 
         @keyframes pop {
@@ -76,22 +76,25 @@
 
 <div id="game-container">
     <div id="path-canvas">
-        <button id="main-button" class="target-btn">Click!</button>
+        <button id="main-button" class="target-btn">Click Me!</button>
     </div>
-    <a href="https://your-next-page.com" id="next-link">4가 완성되었어요! 클릭 🌸</a>
+    <a href="https://your-next-page.com" id="next-link">숫자 4 완성!<br>다음으로 이동하기 🌸</a>
 </div>
 
 <script>
-    // 숫자 '4'를 구성하는 10개의 정밀 좌표
+    // 숫자 '4'의 기둥을 중앙(x: 50)으로 배치한 10개의 좌표
     const points = [
-        // 세로 긴 기둥 (오른쪽 쪽에 위치)
-        {x: 75, y: 10}, {x: 75, y: 32}, {x: 75, y: 55}, {x: 75, y: 77}, {x: 75, y: 100},
-        // 가로 막대
-        {x: 15, y: 65}, {x: 45, y: 65}, {x: 95, y: 65},
-        // 왼쪽 사선 (위에서 가로막대로 내려오는 선)
-        {x: 45, y: 35}, {x: 15, y: 65} // 끝점 중복은 자연스러운 겹침을 위함
+        // 1. 중앙 세로 기둥 (Main Pillar) - x축 50% 고정
+        {x: 50, y: 10}, {x: 50, y: 32}, {x: 50, y: 55}, {x: 50, y: 77}, {x: 50, y: 100},
+        
+        // 2. 왼쪽 사선 (Slanted Line)
+        {x: 10, y: 60}, {x: 30, y: 35}, 
+        
+        // 3. 가로 막대 (Cross Bar) - 기둥을 가로지름
+        {x: 10, y: 60}, {x: 30, y: 60}, {x: 70, y: 60}
     ];
 
+    // 무작위 섞기 (Fisher-Yates Shuffle)
     function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -129,6 +132,7 @@
         updateButton();
     });
 
+    // 첫 위치 초기화
     updateButton();
 </script>
 
