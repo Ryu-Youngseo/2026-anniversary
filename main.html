@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy 4th Anniversary</title>
     <style>
         :root {
@@ -16,14 +17,16 @@
             display: flex; flex-direction: column; align-items: center;
             background: linear-gradient(180deg, var(--bg-pink) 0%, #ffdee9 100%);
             font-family: 'Pretendard', sans-serif;
+            overflow-x: hidden; /* 모바일 가로 스크롤 방지 */
         }
 
         .content-wrapper {
             display: flex; flex-direction: column; align-items: center;
             padding: 40px 20px; width: 100%; max-width: 800px;
+            box-sizing: border-box;
         }
 
-        /* [추가] 4주년 축하 문구 스타일 */
+        /* [반응형] 메인 타이틀 */
         .main-title {
             font-size: 2.6rem;
             color: var(--heart-red);
@@ -32,6 +35,11 @@
             font-weight: 800;
             text-align: center;
             animation: softBounce 2s infinite ease-in-out;
+            word-break: keep-all; /* 단어 단위로 줄바꿈 */
+        }
+
+        @media screen and (max-width: 480px) {
+            .main-title { font-size: 1.8rem; margin-bottom: 25px; }
         }
 
         @keyframes softBounce {
@@ -39,7 +47,7 @@
             50% { transform: translateY(-8px); }
         }
 
-        /* 화려한 정석 달력 스타일 */
+        /* [반응형] 달력 컨테이너 */
         .calendar-container {
             background: white;
             padding: 30px;
@@ -47,7 +55,15 @@
             box-shadow: 0 15px 40px rgba(0,0,0,0.1);
             border: 3px solid var(--anniversary-gold);
             width: 350px;
+            max-width: 100%; /* 모바일에서 화면 너비에 맞춤 */
             margin-bottom: 40px;
+            box-sizing: border-box;
+        }
+
+        @media screen and (max-width: 380px) {
+            .calendar-container { padding: 15px; }
+            .calendar-header { font-size: 1.2rem; }
+            .day { font-size: 0.9rem; }
         }
 
         .calendar-header {
@@ -68,7 +84,6 @@
         .day-label { font-weight: bold; color: #999; font-size: 0.8rem; }
         .day { padding: 10px 0; border-radius: 10px; font-weight: 500; position: relative; }
 
-        /* 5월 13일 강조 */
         .anniversary-day {
             background-color: var(--heart-red);
             color: white !important;
@@ -94,10 +109,24 @@
             to { opacity: 1; transform: translateX(-50%) scale(1.1); }
         }
 
-        /* 편지 아이콘 효과 */
-        .letter-icon-container {
+        /* 아이콘 그룹 정렬 */
+        .icon-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        @media screen and (max-width: 480px) {
+            .icon-group { gap: 25px; }
+            .letter-icon { font-size: 65px !important; }
+            .quest-icon { font-size: 50px !important; }
+        }
+
+        .letter-icon-container, .quest-icon-container {
             cursor: pointer;
-            position: relative;
             transition: transform 0.3s;
         }
 
@@ -107,186 +136,98 @@
             animation: floating 2s infinite ease-in-out;
         }
 
+        .quest-icon {
+            font-size: 60px;
+            filter: drop-shadow(0 0 10px rgba(0, 255, 100, 0.5));
+        }
+
         @keyframes floating {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-15px); }
         }
 
-        /* 팝업 모달 스타일 */
+        /* 팝업 모달 공통 */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             z-index: 1000;
             justify-content: center; align-items: center;
         }
 
+        .modal-overlay.active { display: flex; }
+
+        /* 편지 팝업 */
         .letter-popup {
-            width: 85%; max-width: 450px;
+            width: 90%; max-width: 450px;
             background: var(--letter-paper);
-            padding: 45px 35px;
+            padding: 40px 25px;
             border-radius: 5px;
             position: relative;
-            transform: translateY(30px);
-            opacity: 0;
-            transition: all 0.4s ease-out;
             background-image: radial-gradient(#d1d1d1 0.5px, transparent 0.5px);
             background-size: 25px 25px;
             border-left: 12px solid #f0e68c;
             box-shadow: 5px 5px 20px rgba(0,0,0,0.3);
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
-        .modal-overlay.active { display: flex; }
-        .modal-overlay.active .letter-popup { transform: translateY(0); opacity: 1; }
-
-        .letter-header {
-            font-size: 1.3rem; font-weight: bold; color: var(--heart-red);
-            margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 10px;
-        }
-
-        .letter-content {
-            font-size: 1.05rem; line-height: 1.9; color: #333;
-            white-space: pre-wrap;
-        }
-
-        .close-btn {
-            position: absolute; top: 15px; right: 20px;
-            font-size: 1.8rem; cursor: pointer; color: #bbb;
-        }
-
-        /* 물음표 아이콘 스타일 */
-        .quest-icon-container {
-            display: inline-block;
-            margin-left: 20px;
-            cursor: pointer;
-            transition: transform 0.3s;
-            vertical-align: middle;
-        }
-        .quest-icon {
-            font-size: 60px;
-            filter: drop-shadow(0 0 10px rgba(0, 255, 100, 0.5));
-        }
-        
-        /* 조사병단 팝업 (숲 배경) */
+        /* 조사병단 팝업 */
         .quest-popup {
-            width: 90%;
-            max-width: 600px;
+            width: 90%; max-width: 600px;
             height: 400px;
-            background-image: url('forest_bg.jpg'); /* 임시 숲 배경 파일명 */
+            background-image: url('forest_bg.jpg');
             background-size: cover;
             background-position: center;
             border-radius: 20px;
             position: relative;
-            overflow: hidden; /* 캐릭터가 밖으로 나가지 않게 */
+            overflow: hidden;
             border: 5px solid var(--anniversary-gold);
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-        }
-        
-        /* 캐릭터 본체와 하트 */
-        .character-wrapper {
-            position: absolute;
-            width: 100px;
-            animation: odmGearFly 4s infinite linear;
-            z-index: 5;
-        }
-        
-        .character {
-            width: 100%;
-            height: auto;
-        }
-        
-        .heart-on-char {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            font-size: 20px;
-            animation: heartBeat 0.5s infinite alternate;
-        }
-        
-        /* 사선 입체기동 애니메이션 */
-        @keyframes odmGearFly {
-            0% { 
-                top: 80%; left: -10%; 
-                transform: rotate(15deg) scale(0.8); 
-            }
-            20% { 
-                top: 20%; left: 30%; 
-                transform: rotate(-10deg) scale(1.1); 
-            }
-            40% { 
-                top: 60%; left: 70%; 
-                transform: rotate(20deg) scale(0.9); 
-            }
-            60% { 
-                top: 10%; left: 50%; 
-                transform: rotate(-20deg) scale(1.2); 
-            }
-            80% { 
-                top: 40%; left: 10%; 
-                transform: rotate(10deg) scale(1); 
-            }
-            100% { 
-                top: 80%; left: 110%; 
-                transform: rotate(15deg) scale(0.8); 
-            }
-        }
-        
-        /* 캐릭터와 하트가 같이 흔들리는 효과 추가 */
-        .character-wrapper {
-            position: absolute;
-            width: 100px;
-            /* 4초 동안 더 다이나믹하게 움직이며, 부드러운 곡선을 위해 ease-in-out 사용 */
-            animation: odmGearFly 5s infinite ease-in-out; 
-            z-index: 5;
-        }
-        
-        @keyframes heartBeat {
-            from { transform: scale(1); }
-            to { transform: scale(1.3); }
-        }
-        
-        .quest-message {
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 30px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: bold;
-            z-index: 10;
-            border: 1px solid var(--anniversary-gold);
+            display: flex; justify-content: center; align-items: flex-end;
         }
 
-        /* 아이콘들을 가로로 나란히 정렬 */
-        .icon-group {
-            display: flex;
-            justify-content: center; /* 중앙 정렬 */
-            align-items: center;     /* 높이 맞춤 */
-            gap: 40px;               /* 아이콘 사이 간격 */
-            margin-top: 20px;
-            width: 100%;
+        @media screen and (max-width: 480px) {
+            .quest-popup { height: 300px; }
         }
-        
-        /* 개별 컨테이너에서 불필요한 여백 제거 (중복 방지) */
-        .letter-icon-container, .quest-icon-container {
-            margin: 0; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+
+        /* 캐릭터 애니메이션 */
+        .character-wrapper {
+            position: absolute; width: 80px;
+            animation: odmGearFly 5s infinite ease-in-out;
+            z-index: 5;
+        }
+
+        @keyframes odmGearFly {
+            0% { top: 80%; left: -10%; transform: rotate(15deg) scale(0.8); }
+            20% { top: 20%; left: 30%; transform: rotate(-10deg) scale(1.1); }
+            40% { top: 60%; left: 70%; transform: rotate(20deg) scale(0.9); }
+            60% { top: 10%; left: 50%; transform: rotate(-20deg) scale(1.2); }
+            80% { top: 40%; left: 10%; transform: rotate(10deg) scale(1); }
+            100% { top: 80%; left: 110%; transform: rotate(15deg) scale(0.8); }
+        }
+
+        .quest-message {
+            background: rgba(0, 0, 0, 0.6);
+            color: white; padding: 10px 20px; border-radius: 30px;
+            margin-bottom: 20px; text-align: center; font-weight: bold;
+            z-index: 10; border: 1px solid var(--anniversary-gold);
+            font-size: 0.9rem;
+        }
+
+        .close-btn {
+            position: absolute; top: 10px; right: 15px;
+            font-size: 1.8rem; cursor: pointer; color: #bbb; z-index: 20;
         }
     </style>
 </head>
 <body>
 
 <div class="content-wrapper">
-    <!-- 메인 축하 문구 -->
     <h1 class="main-title">감구마의 4주년을 축하합니다 💖</h1>
 
-    <!-- 정석 달력 -->
     <div class="calendar-container">
         <div class="calendar-header">2026. 05</div>
         <div class="calendar-grid">
@@ -303,24 +244,21 @@
     </div>
 
     <div class="icon-group">
-        <!-- 편지 아이콘 -->
         <div class="letter-icon-container" onclick="openLetter()">
             <div class="letter-icon">✉️</div>
         </div>
-    
-        <!-- 물음표 아이콘 -->
         <div class="quest-icon-container" onclick="openQuest()">
             <div class="quest-icon">❓</div>
         </div>
     </div>
 </div>
 
-<!-- 편지 팝업 모달 -->
+<!-- 편지 팝업 -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeLetter()">
     <div class="letter-popup" onclick="event.stopPropagation()">
         <span class="close-btn" onclick="closeLetter()">&times;</span>
-        <div class="letter-header">To. 도영</div>
-        <div class="letter-content">
+        <div style="font-size: 1.2rem; font-weight: bold; color: var(--heart-red); margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">To. 도영</div>
+        <div style="font-size: 1rem; line-height: 1.8; color: #333; white-space: pre-wrap;">
 오빠!
 우리가 함께 한지 벌써 4년이 됐어
 시간은 정말 빠르게 흘렀지만 나에겐 넉넉하고 행복으로 꽉 찬 시간들이였어
@@ -337,43 +275,27 @@
 
 말로 다 할 수 없을 만큼 사랑해! 넌 내 거야 💖
         </div>
-        <div style="margin-top: 30px; text-align: right; font-weight: bold; color: #666;">
-            From. 영서
-        </div>
+        <div style="margin-top: 25px; text-align: right; font-weight: bold; color: #666;">From. 영서</div>
     </div>
 </div>
 
+<!-- 조사병단 팝업 -->
 <div class="modal-overlay" id="questOverlay" onclick="closeQuest()">
     <div class="quest-popup" onclick="event.stopPropagation()">
         <span class="close-btn" onclick="closeQuest()">&times;</span>
-        
-        <!-- 하트를 달고 날아다니는 캐릭터 -->
         <div class="character-wrapper">
-            <img src="character.png" class="character" alt="조사병단">
-            <span class="heart-on-char">💖</span>
+            <img src="character.png" style="width:100%;" alt="조사병단">
+            <span style="position: absolute; top: -10px; right: -10px; font-size: 20px;">💖</span>
         </div>
-        
-        <div class="quest-message">
-            心臓を捧げよ! 
-        </div>
+        <div class="quest-message">心臓を捧げよ!</div>
     </div>
 </div>
 
 <script>
-    function openLetter() {
-        document.getElementById('modalOverlay').classList.add('active');
-    }
-    function closeLetter() {
-        document.getElementById('modalOverlay').classList.remove('active');
-    }
-
-    function openQuest() {
-        document.getElementById('questOverlay').classList.add('active');
-    }
-    
-    function closeQuest() {
-        document.getElementById('questOverlay').classList.remove('active');
-    }
+    function openLetter() { document.getElementById('modalOverlay').classList.add('active'); }
+    function closeLetter() { document.getElementById('modalOverlay').classList.remove('active'); }
+    function openQuest() { document.getElementById('questOverlay').classList.add('active'); }
+    function closeQuest() { document.getElementById('questOverlay').classList.remove('active'); }
 </script>
 
 </body>
