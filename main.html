@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>4th Anniversary Letter</title>
+    <title>4th Anniversary</title>
     <style>
         :root {
             --bg-pink: #fff0f5;
@@ -20,34 +20,75 @@
 
         .content-wrapper {
             display: flex; flex-direction: column; align-items: center;
-            padding: 50px 20px; width: 100%; max-width: 800px;
+            padding: 60px 20px; width: 100%; max-width: 800px;
         }
 
-        h1 { font-size: 2.5rem; color: var(--heart-red); margin-bottom: 30px; }
+        /* [디자인 복원] 화려한 정석 달력 스타일 */
+        .calendar-container {
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border: 3px solid var(--anniversary-gold);
+            width: 350px;
+            margin-bottom: 50px;
+        }
 
-        /* 편지 아이콘 디자인 및 반짝임 효과 */
+        .calendar-header {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+
+        .day-label { font-weight: bold; color: #999; font-size: 0.8rem; }
+        .day { padding: 10px 0; border-radius: 10px; font-weight: 500; position: relative; }
+
+        /* 5월 13일 강조 */
+        .anniversary-day {
+            background-color: var(--heart-red);
+            color: white !important;
+            font-weight: bold;
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--heart-red);
+            z-index: 1;
+        }
+
+        .anniversary-day::after {
+            content: "4th 🎉";
+            position: absolute;
+            top: -25px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            color: var(--heart-red);
+            white-space: nowrap;
+            animation: twinkle 1s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            from { opacity: 0.5; transform: translateX(-50%) scale(0.9); }
+            to { opacity: 1; transform: translateX(-50%) scale(1.1); }
+        }
+
+        /* 편지 아이콘 효과 */
         .letter-icon-container {
-            margin-top: 20px;
             cursor: pointer;
             position: relative;
             transition: transform 0.3s;
         }
 
-        .letter-icon-container:hover { transform: scale(1.1); }
-
         .letter-icon {
-            font-size: 80px;
-            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+            font-size: 85px;
+            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
             animation: floating 2s infinite ease-in-out;
-        }
-
-        /* 반짝이는 입자 효과 */
-        .letter-icon-container::after {
-            content: '✨';
-            position: absolute;
-            top: -10px; right: -10px;
-            font-size: 24px;
-            animation: sparkle 1.5s infinite;
         }
 
         @keyframes floating {
@@ -55,94 +96,70 @@
             50% { transform: translateY(-15px); }
         }
 
-        @keyframes sparkle {
-            0%, 100% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
-
-        /* 팝업 모달 배경 */
+        /* 팝업 모달 스타일 */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
             z-index: 1000;
             justify-content: center; align-items: center;
         }
 
-        /* 편지지 디자인 */
         .letter-popup {
-            width: 90%; max-width: 450px;
+            width: 85%; max-width: 450px;
             background: var(--letter-paper);
-            padding: 40px;
+            padding: 45px 35px;
             border-radius: 5px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
             position: relative;
-            transform: translateY(50px);
+            transform: translateY(30px);
             opacity: 0;
-            transition: all 0.5s ease;
-            /* 편지지 느낌을 위한 선 */
-            background-image: radial-gradient(#d1d1d1 1px, transparent 1px);
-            background-size: 20px 20px;
-            border-left: 10px solid #f0e68c;
+            transition: all 0.4s ease-out;
+            background-image: radial-gradient(#d1d1d1 0.5px, transparent 0.5px);
+            background-size: 25px 25px;
+            border-left: 12px solid #f0e68c;
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.3);
         }
 
         .modal-overlay.active { display: flex; }
         .modal-overlay.active .letter-popup { transform: translateY(0); opacity: 1; }
 
-        .letter-content {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #444;
-            white-space: pre-wrap; /* 줄바꿈 유지 */
+        .letter-header {
+            font-size: 1.3rem; font-weight: bold; color: var(--heart-red);
+            margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 10px;
         }
 
-        .letter-header {
-            font-size: 1.4rem; font-weight: bold; color: var(--heart-red);
-            margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;
+        .letter-content {
+            font-size: 1.05rem; line-height: 1.9; color: #333;
+            white-space: pre-wrap;
         }
 
         .close-btn {
             position: absolute; top: 15px; right: 20px;
-            font-size: 1.5rem; cursor: pointer; color: #999;
+            font-size: 1.8rem; cursor: pointer; color: #bbb;
         }
-
-        /* 이전 달력 스타일 유지 */
-        .calendar-container {
-            background: white; padding: 25px; border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            border: 2px solid var(--anniversary-gold);
-            width: 300px; margin-bottom: 40px;
-        }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; font-size: 0.9rem; }
-        .day { padding: 8px 0; position: relative; }
-        .anniversary-day { background: var(--heart-red); color: white; border-radius: 50%; font-weight: bold; }
-
     </style>
 </head>
 <body>
 
 <div class="content-wrapper">
-    <h1>4주년을 축하합니다 💖</h1>
-
-    <!-- 달력 (간략 버전) -->
+    <!-- 처음 보내드린 디자인의 달력 -->
     <div class="calendar-container">
-        <div style="text-align:center; font-weight:bold; margin-bottom:15px;">2026. 05</div>
+        <div class="calendar-header">2026. 05</div>
         <div class="calendar-grid">
-            <div style="color:red">S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
-            <!-- 날짜 생략 (구조 유지를 위해 공백 삽입) -->
-            <div class="day" style="grid-column: 6;">1</div><div class="day">2</div>
+            <div class="day-label">S</div><div class="day-label">M</div><div class="day-label">T</div><div class="day-label">W</div><div class="day-label">T</div><div class="day-label">F</div><div class="day-label">S</div>
+            <div class="day"></div><div class="day"></div><div class="day"></div><div class="day"></div><div class="day"></div><div class="day">1</div><div class="day">2</div>
             <div class="day">3</div><div class="day">4</div><div class="day">5</div><div class="day">6</div><div class="day">7</div><div class="day">8</div><div class="day">9</div>
             <div class="day">10</div><div class="day">11</div><div class="day">12</div>
             <div class="day anniversary-day">13</div>
             <div class="day">14</div><div class="day">15</div><div class="day">16</div>
-            <div class="day">...</div>
+            <div class="day">17</div><div class="day">18</div><div class="day">19</div><div class="day">20</div><div class="day">21</div><div class="day">22</div><div class="day">23</div>
+            <div class="day">24</div><div class="day">25</div><div class="day">26</div><div class="day">27</div><div class="day">28</div><div class="day">29</div><div class="day">30</div>
+            <div class="day">31</div>
         </div>
     </div>
 
-    <p style="font-size: 1.2rem; color: #666;">당신을 위한 메시지가 도착했습니다.</p>
-    
     <!-- 편지 아이콘 -->
     <div class="letter-icon-container" onclick="openLetter()">
         <div class="letter-icon">✉️</div>
@@ -162,12 +179,12 @@
 
 때로는 투닥거리기도 했지만, 
 언제나 내 편이 되어줘서 고마워.
-앞으로 그려갈 우리의 5년, 10년도 
+앞으로 그려갈 우리의 시간들도
 지금처럼 행복했으면 좋겠어.
 
-세상에서 제일 사랑해! 💖
+사랑해! 💖
         </div>
-        <div style="margin-top: 30px; text-align: right; font-weight: bold;">
+        <div style="margin-top: 30px; text-align: right; font-weight: bold; color: #666;">
             From. 당신의 단짝이
         </div>
     </div>
@@ -177,7 +194,6 @@
     function openLetter() {
         document.getElementById('modalOverlay').classList.add('active');
     }
-
     function closeLetter() {
         document.getElementById('modalOverlay').classList.remove('active');
     }
